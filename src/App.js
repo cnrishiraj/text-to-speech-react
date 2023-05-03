@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+// src/App.js
 import './App.css';
+import React from 'react';
+import TextToSpeech from './TextToSpeech';
+import SwaggerUI from "swagger-ui-react";
+import "swagger-ui-react/swagger-ui.css";
+import yaml from 'js-yaml';
+import swaggerFile from './swagger.yaml';
 
 function App() {
+  const [swagger, setSwagger] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch(swaggerFile)
+      .then((response) => response.text())
+      .then((text) => {
+        const parsedYaml = yaml.load(text);
+        setSwagger(parsedYaml);
+      })
+      .catch((error) => console.error('Error loading swagger.yaml:', error));
+  }, []);
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TextToSpeech />
+      {swagger && <SwaggerUI spec={swagger} />}
     </div>
   );
 }

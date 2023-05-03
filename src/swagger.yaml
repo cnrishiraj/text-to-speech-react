@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: Text-to-Speech API
+  version: "1.0.0"
+servers:
+  - url: https://eastus.
+    description: East US region
+
+paths:
+  api.cognitive.microsoft.com/sts/v1.0/issuetoken:
+    post:
+      summary: Fetch Access Token
+      description: Fetches an access token from Microsoft Azure Text-to-Speech API
+      responses:
+        "200":
+          description: Access token
+          content:
+            text/plain:
+              schema:
+                type: string
+      
+      parameters:
+        - in: header
+          name: Ocp-Apim-Subscription-Key
+          schema:
+            type: string
+            default: 0f9cd7ac7a9243868cf99a4a7cc1416c
+          required: true
+          description: Fetches an access token from Microsoft Azure Text-to-Speech API
+
+  tts.speech.microsoft.com/cognitiveservices/v1:
+    post:
+      summary: Convert text to speech
+      description: Converts a given text string to speech using Microsoft Azure Text-to-Speech API
+      requestBody:
+        required: true
+        content:
+          application/ssml+xml:
+            schema:
+              type: string
+              example: '<speak version="1.0" xml:lang="en-US">
+                          <voice xml:lang="en-US" xml:gender="Male" name="en-US-ChristopherNeural">
+                            Microsoft Speech Service Text-to-Speech API
+                          </voice>
+                        </speak>'
+      responses:
+        "200":
+          description: Audio file in MP3 format
+          content:
+            audio/mp3:
+              schema:
+                type: string
+                format: binary
+      security:
+        - bearerAuth: []
+      
+      parameters:
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            default: application/ssml+xml
+          required: true
+          description: Content type of the request body
+        - in: header
+          name: X-Microsoft-OutputFormat
+          schema:
+            type: string
+            default: audio-16khz-128kbitrate-mono-mp3
+          required: true
+          description: The desired audio output format
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          description: Bearer token for authorization
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+
+  
